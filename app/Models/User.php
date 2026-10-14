@@ -36,4 +36,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Dog::class);
     }
+
+    public function chatMessages(): HasMany
+    {
+        return $this->hasMany(ChatMessage::class);
+    }
 }

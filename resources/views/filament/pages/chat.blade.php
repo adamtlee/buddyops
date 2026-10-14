@@ -11,6 +11,7 @@
         .bo-row-bot { display: flex; gap: .85rem; align-items: flex-start; }
         .bo-avatar { flex: none; width: 2.1rem; height: 2.1rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: var(--primary-600); color: #fff; }
         .bo-bot { max-width: 85%; white-space: pre-wrap; background: var(--bo-surface); color: var(--bo-text); border: 1px solid var(--bo-border); padding: .75rem 1.1rem; border-radius: .3rem 1.4rem 1.4rem 1.4rem; font-size: 1rem; line-height: 1.6; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+        .bo-error { border-color: #fca5a5; color: #b91c1c; }
         .bo-empty { margin: auto; display: flex; flex-direction: column; align-items: center; gap: 1.25rem; text-align: center; }
         .bo-logo { width: 4rem; height: 4rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(135deg, var(--primary-400), var(--primary-700)); box-shadow: 0 8px 20px rgba(0,0,0,.18); }
         .bo-logo svg { width: 2rem; height: 2rem; }
@@ -31,6 +32,18 @@
 
     <div class="bo-wrap">
     <div class="bo-chat">
+        @php($dogs = auth()->user()->dogs()->orderBy('id')->get(['id', 'name']))
+        @if ($dogs->count() > 1)
+            <label class="mb-3 flex items-center gap-2 self-start text-sm text-gray-600 dark:text-gray-300">
+                <span>Chat about</span>
+                <select wire:model.live.number="dogId" aria-label="Select dog" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-950 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+                    @foreach ($dogs as $dog)
+                        <option value="{{ $dog->id }}">{{ $dog->name }}</option>
+                    @endforeach
+                </select>
+            </label>
+        @endif
+
         <div
             class="bo-scroll"
             x-data
@@ -38,13 +51,15 @@
             x-effect="$wire.messages.length; $nextTick(() => $el.scrollTo({ top: $el.scrollHeight, behavior: 'smooth' }))"
         >
             @forelse ($messages as $message)
-                @if ($message['role'] === 'user')
-                    <div class="bo-row-user"><div class="bo-user">{{ $message['content'] }}</div></div>
-                @else
-                    <div class="bo-row-bot">
-                        <div class="bo-avatar"><x-filament::icon icon="heroicon-o-sparkles" /></div>
-                        <div class="bo-bot">{{ $message['content'] }}</div>
-                    </div>
+                @if ($message['role'] !== 'tool' && $message['content'] !== '')
+                    @if ($message['role'] === 'user')
+                        <div class="bo-row-user"><div class="bo-user">{{ $message['content'] }}</div></div>
+                    @else
+                        <div class="bo-row-bot">
+                            <div class="bo-avatar"><x-filament::icon icon="heroicon-o-sparkles" /></div>
+                            <div class="bo-bot {{ ! empty($message['is_error']) ? 'bo-error' : '' }}">{{ $message['content'] }}</div>
+                        </div>
+                    @endif
                 @endif
             @empty
                 <div class="bo-empty">
@@ -58,6 +73,11 @@
                     </div>
                 </div>
             @endforelse
+
+            <div wire:loading.flex wire:target="send" class="bo-row-bot" role="status" aria-live="polite">
+                <div class="bo-avatar"><x-filament::icon icon="heroicon-o-sparkles" /></div>
+                <div class="bo-bot">Thinking…</div>
+            </div>
         </div>
 
         <form wire:submit="send">
@@ -71,9 +91,8 @@
                     x-on:input="$el.style.height = 'auto'; $el.style.height = Math.min($el.scrollHeight, 192) + 'px'"
                     x-on:keydown.enter="if (!$event.shiftKey) { $event.preventDefault(); $wire.send().then(() => $el.style.height = 'auto') }"
                 ></textarea>
-                <button type="submit" class="bo-send" aria-label="Send"><x-filament::icon icon="heroicon-m-arrow-up" /></button>
+                <button type="submit" class="bo-send" aria-label="Send" wire:loading.attr="disabled" wire:target="send"><x-filament::icon icon="heroicon-m-arrow-up" /></button>
             </div>
-            <p class="bo-note">Test mode: no LLM is connected yet.</p>
         </form>
     </div>
     </div>
