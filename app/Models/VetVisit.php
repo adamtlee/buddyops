@@ -12,7 +12,7 @@ class VetVisit extends Model
 
     protected $fillable = [
         'dog_id', 'visited_on', 'clinic', 'reason',
-        'diagnosis', 'notes', 'next_due_on',
+        'diagnosis', 'notes', 'next_due_on', 'source',
     ];
 
     protected function casts(): array
