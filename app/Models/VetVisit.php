@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VetVisit extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'dog_id', 'visited_on', 'clinic', 'reason',
         'diagnosis', 'notes', 'next_due_on',

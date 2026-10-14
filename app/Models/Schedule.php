@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Schedule extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'dog_id', 'type', 'title', 'time_of_day',
         'days_of_week', 'is_active',
