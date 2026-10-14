@@ -6,6 +6,13 @@ use App\Filament\Resources\Dogs\Pages\CreateDog;
 use App\Filament\Resources\Dogs\Pages\EditDog;
 use App\Filament\Resources\Dogs\Pages\ListDogs;
 use App\Filament\Resources\Dogs\Pages\ViewDog;
+use App\Filament\Resources\Dogs\RelationManagers\DocumentsRelationManager;
+use App\Filament\Resources\Dogs\RelationManagers\FeedingsRelationManager;
+use App\Filament\Resources\Dogs\RelationManagers\HealthFlagsRelationManager;
+use App\Filament\Resources\Dogs\RelationManagers\PlaySessionsRelationManager;
+use App\Filament\Resources\Dogs\RelationManagers\SchedulesRelationManager;
+use App\Filament\Resources\Dogs\RelationManagers\VetVisitsRelationManager;
+use App\Filament\Resources\Dogs\RelationManagers\WalksRelationManager;
 use App\Filament\Resources\Dogs\Schemas\DogForm;
 use App\Filament\Resources\Dogs\Schemas\DogInfolist;
 use App\Filament\Resources\Dogs\Tables\DogsTable;
@@ -20,7 +27,7 @@ class DogResource extends Resource
 {
     protected static ?string $model = Dog::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -42,7 +49,13 @@ class DogResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            FeedingsRelationManager::class,
+            WalksRelationManager::class,
+            PlaySessionsRelationManager::class,
+            VetVisitsRelationManager::class,
+            HealthFlagsRelationManager::class,
+            SchedulesRelationManager::class,
+            DocumentsRelationManager::class,
         ];
     }
 

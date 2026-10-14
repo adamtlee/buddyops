@@ -16,15 +16,17 @@ class DogForm
             ->components([
                 Select::make('user_id')
                     ->relationship('user', 'name')
+                    ->default(auth()->id())
                     ->required(),
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('breed'),
-                DatePicker::make('birthdate'),
                 Select::make('sex')
                     ->options(['male' => 'Male', 'female' => 'Female']),
+                DatePicker::make('birthdate'),
                 TextInput::make('weight_kg')
-                    ->numeric(),
+                    ->numeric()
+                    ->suffix('kg'),
                 Textarea::make('allergies')
                     ->columnSpanFull(),
                 Textarea::make('notes')

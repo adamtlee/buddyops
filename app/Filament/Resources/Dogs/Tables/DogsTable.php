@@ -15,19 +15,18 @@ class DogsTable
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')
-                    ->searchable(),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('breed')
                     ->searchable(),
-                TextColumn::make('birthdate')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('sex')
-                    ->searchable(),
+                TextColumn::make('sex'),
                 TextColumn::make('weight_kg')
                     ->numeric()
+                    ->suffix(' kg')
+                    ->sortable(),
+                TextColumn::make('birthdate')
+                    ->date()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
