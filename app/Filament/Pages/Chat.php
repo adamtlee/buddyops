@@ -39,7 +39,6 @@ class Chat extends Page
     {
         $user = $this->currentUser();
         $this->dogId = $this->defaultDogId($user);
-        $this->loadMessages();
     }
 
     public function updatedDogId(): void

@@ -62,4 +62,22 @@ class ChatPageTest extends TestCase
 
         $this->assertSame(0, ChatMessage::count());
     }
+
+    public function test_refresh_starts_with_the_original_empty_chat_screen(): void
+    {
+        $user = User::factory()->create();
+        $dog = $user->dogs()->create(['name' => 'Buddy']);
+        ChatMessage::create([
+            'user_id' => $user->id,
+            'dog_id' => $dog->id,
+            'role' => 'user',
+            'content' => 'A saved earlier message',
+        ]);
+        $this->actingAs($user);
+
+        Livewire::test(Chat::class)
+            ->assertSet('messages', [])
+            ->assertSee('What can I help with?')
+            ->assertDontSee('A saved earlier message');
+    }
 }
